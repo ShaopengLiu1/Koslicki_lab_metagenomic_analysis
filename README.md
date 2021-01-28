@@ -9,9 +9,8 @@ Shaopeng Liu (sml6467@psu.edu)
   - [2.2 ANI-based similarity aggregation](#22_ani)
 - [3. Reproducibility](#3_reproducible)
   - [3.1 Install dependency (only once)](#31_depen)
-  - [3.2 Activate working environment](#32_activate)
-  - [3.3 Reproduce 2.1_CMash results](#33_CMash)
-  - [3.4 Reproduce 2.2_similarity_tree results](#34_simi)
+  - [3.2 Reproduce 2.1_CMash results](#32_CMash)
+  - [3.3 Reproduce 2.2_similarity_tree results](#33_simi)
 - [4. Change log and note](#4_log)
   
 ## 1. File introduction <a name="1_file_intro"></a>
@@ -48,11 +47,13 @@ cd src
 bash install_dependency.sh
 ```
 
-### 3.2 Activate working environment (every time before running the analysis) <a name="32_activate"></a>
+### 3.2 Reproducibles for CMash <a name="32_CMash"></a>
+(1) prepare input genomes
+```
+```
 
-### 3.3 Reproducibles for CMash <a name="33_CMash"></a>
 
-### 3.4 Reproducibles for ANI-similarity-based tree <a name="34_simi"></a>
+### 3.3 Reproducibles for ANI-similarity-based tree <a name="33_simi"></a>
 
 
 ## 4. Change log and note <a name="4_log"></a>
