@@ -15,7 +15,10 @@ Shaopeng Liu (sml6467@psu.edu)
 - [4. Change log and note](#4_log)
   
 ## 1. File introduction <a name="1_file_intro"></a>
-
+- [src](https://github.com/ShaopengLiu1/Koslicki_lab_metagenomic_analysis/tree/main/src): a source folder to store necessary tools and scripts
+   - install_dependency.sh: a bash script to download tools and to create a conda envrionment for downstream usage
+- [CMash-reproducible](): reproducibility for all CMash-related analysis
+- [ANI-tree](): reproducibility for all ANI-based similarity tree analysis
 
 ## 2. Analysis <a name="2_analysis"></a>
 ### 2.1 CMash <a name="21_CMash_repro"></a>
@@ -35,6 +38,15 @@ Try ANI-based aggregation tree for species clustering.
 ## 3. Reproducibility <a name="3_reproducible"></a>
 Repeat analysis results by bash/py pipelines.
 ### 3.1 Install dependency (only need to be done once) <a name="31_depen"></a>
+(1) clone this repo:
+```
+git clone https://github.com/ShaopengLiu1/Koslicki_lab_metagenomic_analysis.git
+```
+(2) go to src folder and install necessary tools
+```
+cd src
+bash install_dependency.sh
+```
 
 ### 3.2 Activate working environment (every time before running the analysis) <a name="32_activate"></a>
 
