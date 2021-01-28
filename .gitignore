@@ -1,0 +1,5 @@
+# ignore unnecessary resources to make this repo light
+
+### ignore CMash repo
+./src/CMash/
+
