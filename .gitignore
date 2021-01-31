@@ -1,5 +1,13 @@
 # ignore unnecessary resources to make this repo light
 
-### ignore CMash repo
-./src/CMash/
+### 1. CMash
+
+### 2. Similarity tree
+
+### 3. mini analysis
+#20210130_CAMISIM_errorfree_simulation
+3_mini_analysis/20210130_CAMISIM_errorfree_simulation/*
+!3_mini_analysis/20210130_CAMISIM_errorfree_simulation/input_species.txt
+!3_mini_analysis/20210130_CAMISIM_errorfree_simulation/*sh
+
 
