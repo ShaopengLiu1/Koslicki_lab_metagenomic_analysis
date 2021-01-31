@@ -13,6 +13,6 @@ src/git_repo/*
 3_mini_analysis/20210130_CAMISIM_errorfree_simulation/*
 !3_mini_analysis/20210130_CAMISIM_errorfree_simulation/input_species.txt
 !3_mini_analysis/20210130_CAMISIM_errorfree_simulation/*sh
-!3_mini_analysis/20210130_CAMISIM_errorfree_simulation/CAMISIM_config_file/*
+!3_mini_analysis/20210130_CAMISIM_errorfree_simulation/CAMISIM_config_file
 
 
