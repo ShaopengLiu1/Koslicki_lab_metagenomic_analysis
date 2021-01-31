@@ -49,7 +49,7 @@ git clone https://github.com/ShaopengLiu1/Koslicki_lab_metagenomic_analysis.git
 (2) go to src folder and install necessary tools
 ```
 cd src
-bash install_dependency.sh
+bash 0.install_dependency.sh
 ```
 
 ### 3.2 Reproducibles for CMash <a name="32_CMash"></a>

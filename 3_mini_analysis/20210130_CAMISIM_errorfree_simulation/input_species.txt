@@ -12,7 +12,7 @@ Lactobacillus gasseri DSM 20243
 Listeria monocytogenes ATCC BAA-679
 Methanobrevibacter smithii ATCC 35061
 Neisseria meningitidis ATCC BAA-335
-Propionibacterium acnes DSM16379
+Propionibacterium acnes DSM 16379
 Pseudomonas aeruginosa ATCC 47085
 Rhodobacter sphaeroides ATCC 17023
 Staphylococcus aureus ATCC BAA-1718
