@@ -42,7 +42,7 @@ if [[ ! -z $error_free ]]; then
 		echo "Setting config into error-free mode!!!!!!"
 		sed -i "s#readsim=tools/art_illumina-2.3.6/art_illumina#readsim=tools/wgsim/wgsim#g" new_mini_config.ini
 		sed -i "s#error_profiles=tools/art_illumina-2.3.6/profiles#error_profiles=.#g" new_mini_config.ini
-		sed -i "s#profile=mbarc#error_profiles=.#g" new_mini_config.ini
+		sed -i "s#profile=mbarc#profiles=0.0#g" new_mini_config.ini
 		sed -i "s#type=art#type=wgsim#g" new_mini_config.ini
 	fi
 fi
