@@ -8,7 +8,6 @@ src/GenBank_db/*
 ### 1. CMash
 1_CMash/*
 !1_CMash/*.md
-!1_CMash/src
 
 ### 2. Similarity tree
 
