@@ -3,6 +3,7 @@
 ### src folder
 src/conda_env/*
 src/git_repo/*
+src/GenBank_db/*
 
 ### 1. CMash
 1_CMash/*
