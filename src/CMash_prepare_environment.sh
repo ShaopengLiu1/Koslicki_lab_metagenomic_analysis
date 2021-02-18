@@ -40,9 +40,8 @@ tar -xzf taxdump.tar.gz && rm taxdump.tar.gz
 
 
 # download CMash git
-### seems not necessary
 cd ${git_path}
-
+git clone https://github.com/dkoslicki/CMash.git
 
 
 date
