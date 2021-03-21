@@ -556,37 +556,28 @@ def cce_bf_trunc(cce_obj, new_ksize):
 	:param cce_obj:
 	:return:
 	"""
-	return cce_obj.brute_force_truncation(new_ksize)
+	cce_obj.brute_force_truncation(new_ksize)
+	return cce_obj
 
 
-def wrapper_cce_bf_trunc_star(arg):
+def cce_bf_trunc_star(arg):
 	"""
-	wrapper function to call cce_bf_trunc
+	just a wrapper to pass 2 para to cce_bf_trunc function
 	:param arg:
 	:return:
 	"""
 	return cce_bf_trunc(*arg)
 
 
-def bf_trunc_cce_list(ce_list, new_ksize, threads=8):
-	"""
-	apply brute force truncation for a list of CCE objects in parallel
-	:param ce_list:
-	:param new_ksize:
-	:return:
-	"""
-	para = Pool(processes=threads)
-	para.map(wrapper_cce_bf_trunc_star, zip(ce_list, repeat(new_ksize)))
-	para.close()
-
-
 def cce_load_full_kmer(cce_obj):
 	"""
 	wrapper function for a CCE to call load full kmer function
+	This will create a copy of CCE obj
 	:param cce_obj:
 	:return:
 	"""
-	return cce_obj.add_full_kmer_set()
+	cce_obj.add_full_kmer_set()
+	return cce_obj
 
 	
 #################################################
@@ -661,43 +652,6 @@ def f4_test_bias_calculation():
 	E2.brute_force_truncation(3)
 	assert E1.calculate_bias_factor(E2) == (4 * 1.0) / (6 / 2)
 
-
-# local file
-### print a function: print(inspect.getsource(cce_load_full_kmer))
-# file1="/Users/shaopeng/Desktop/WTST_test_run/test/GCA_000417225.2_ASM41722v2_genomic.fna"
-# file2="/Users/shaopeng/Desktop/WTST_test_run/test/GCA_012970185.1_ASM1297018v1_genomic.fna"
-# obj1 = CMash_CountEstimator(n=100, ksize=10, input_file_name=file1)
-# obj2 = CMash_CountEstimator(n=100, ksize=10, input_file_name=file2)
-# l1 = [obj1, obj2]
-# # this function can be called in single run
-# l1[0].full_kmer
-# cce_load_full_kmer(l2[0])
-# l1[0].full_kmer
-# # but it can't be called in parallel: https://docs.python.org/3/library/multiprocessing.html
-# l1[1].full_kmer
-# with Pool(2) as P:
-# 	P.map(cce_load_full_kmer, l1)
-# l1[1].full_kmer
-#
-#
-# def f(x):
-# 	return x*x
-# with Pool(2) as P:
-# 	print(P.map(f, [1,2]))
-#
-# # it works if return a new OBJ (but I don't want to do so as it's a copy...)
-# def test_cce_load_full_kmer(cce_obj):
-# 	"""
-# 	wrapper function for a CCE to call load full kmer function
-# 	:param cce_obj:
-# 	:return:
-# 	"""
-# 	cce_obj.add_full_kmer_set()
-# 	return cce_obj
-# with Pool(2) as P:
-# 	out_sketch = P.map(test_cce_load_full_kmer, l1)
-# l1[1].full_kmer
-# out_sketch[1].full_kmer
 
 
 #################################################
@@ -794,13 +748,14 @@ if __name__ == '__main__':
 				print("Calculating GT_JI for k "+str(i))
 				out_name = "GroundTruth_JI_k" + str(i) + ".csv"
 				# read full kmers into the CCE objects
-				for obj in sketch1+sketch2:
-					obj.add_full_kmer_set()
+				with Pool(num_threads) as P:
+					full_sketch1 = P.map(cce_load_full_kmer, sketch1)
+					full_sketch2 = P.map(cce_load_full_kmer, sketch2)
 				# get GT
-				wrapper_ground_truth_ji_matrix(sketch1, sketch2, out_name, threads=num_threads)
+				wrapper_ground_truth_ji_matrix(full_sketch1, full_sketch2, out_name, threads=num_threads)
 				
 			# delete obj to release MEM
-			for obj in sketch1 + sketch2:
+			for obj in sketch1 + sketch2 + full_sketch1 + full_sketch2:
 				del obj
 				
 				
@@ -811,8 +766,13 @@ if __name__ == '__main__':
 		                        max_h=max_h, prime=prime)
 		sketch2 = get_cce_lists(input_file=ref_list, input_k=ksize, rev_comp=rev_comp, threads=num_threads,
 		                        max_h=max_h, prime=prime)
+		# load full kmer set
+		with Pool(num_threads) as P:
+			full_sketch1 = P.map(cce_load_full_kmer, sketch1)
+			full_sketch2 = P.map(cce_load_full_kmer, sketch2)
+		# release MEM
 		for obj in sketch1 + sketch2:
-			obj.add_full_kmer_set()
+			del obj
 		# reverse ksize: trunc up -> down
 		rev_k_sizes = k_sizes.copy()
 		rev_k_sizes.reverse()
@@ -820,14 +780,22 @@ if __name__ == '__main__':
 			# no truncation
 			rev_k_sizes.remove(ksize)
 		for i in rev_k_sizes:
-			for obj in sketch1+sketch2:
-				obj.brute_force_truncation(i)
+			with Pool(num_threads) as P:
+				trunc_full_sketch1 = P.map(cce_bf_trunc_star, zip(full_sketch1, repeat(i)))
+				trunc_full_sketch2 = P.map(cce_bf_trunc_star, zip(full_sketch2, repeat(i)))
+			# release MEM
+			for obj in full_sketch1 + full_sketch2:
+				del obj
 			if not skip_trunc:
 				print("Calculating trunc_JI for k "+str(i))
 				out_name = "trunc_JI_k" + str(i) + ".csv"
-				wrapper_streaming_method_ji_from_ci_matrix(sketch1, sketch2, out_name, threads=num_threads)
+				wrapper_streaming_method_ji_from_ci_matrix(trunc_full_sketch1, trunc_full_sketch2, out_name, threads=num_threads)
 			if not skip_bias:
 				print("Calculatin bias factor for k "+str(i))
 				out_name = "bias_factor_k" + str(i) + "_to_k" + str(ksize) + ".csv"
-				wrapper_bias_factor_matrix(sketch1, sketch2, out_name, threads=num_threads)
+				wrapper_bias_factor_matrix(trunc_full_sketch1, trunc_full_sketch2, out_name, threads=num_threads)
+			# release MEM
+			for obj in trunc_full_sketch1 + trunc_full_sketch2:
+				del obj
 			
+
