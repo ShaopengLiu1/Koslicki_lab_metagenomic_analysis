@@ -18,6 +18,7 @@ import screed
 import bisect
 import inspect
 import copy
+import gc
 
 
 # function defination
@@ -494,7 +495,8 @@ class CMash_CountEstimator(CountEstimator):
 		
 		_inter = set(self._truncated_all_kmer).intersection(other._truncated_all_kmer)
 		_union = set(self._truncated_all_kmer).union(other._truncated_all_kmer)
-		
+		print(len(_inter))
+		print(len(_union))
 		return len(_inter)*1.0/len(_union)
 	
 	
@@ -755,8 +757,8 @@ if __name__ == '__main__':
 				wrapper_ground_truth_ji_matrix(full_sketch1, full_sketch2, out_name, threads=num_threads)
 				
 			# delete obj to release MEM
-			for obj in sketch1 + sketch2 + full_sketch1 + full_sketch2:
-				del obj
+			del sketch1, sketch2, full_sketch1, full_sketch2
+			gc.collect()
 				
 				
 	### Trunc_JI and bias_factor can be done together:
@@ -771,8 +773,8 @@ if __name__ == '__main__':
 			full_sketch1 = P.map(cce_load_full_kmer, sketch1)
 			full_sketch2 = P.map(cce_load_full_kmer, sketch2)
 		# release MEM
-		for obj in sketch1 + sketch2:
-			del obj
+		del sketch1, sketch2
+		gc.collect()
 		# reverse ksize: trunc up -> down
 		rev_k_sizes = k_sizes.copy()
 		rev_k_sizes.reverse()
@@ -783,9 +785,6 @@ if __name__ == '__main__':
 			with Pool(num_threads) as P:
 				trunc_full_sketch1 = P.map(cce_bf_trunc_star, zip(full_sketch1, repeat(i)))
 				trunc_full_sketch2 = P.map(cce_bf_trunc_star, zip(full_sketch2, repeat(i)))
-			# release MEM
-			for obj in full_sketch1 + full_sketch2:
-				del obj
 			if not skip_trunc:
 				print("Calculating trunc_JI for k "+str(i))
 				out_name = "trunc_JI_k" + str(i) + ".csv"
@@ -795,7 +794,9 @@ if __name__ == '__main__':
 				out_name = "bias_factor_k" + str(i) + "_to_k" + str(ksize) + ".csv"
 				wrapper_bias_factor_matrix(trunc_full_sketch1, trunc_full_sketch2, out_name, threads=num_threads)
 			# release MEM
-			for obj in trunc_full_sketch1 + trunc_full_sketch2:
-				del obj
+			del trunc_full_sketch1, trunc_full_sketch2
+			gc.collect()
+
 			
+
 

@@ -43,6 +43,9 @@ awk -F"\t"  '{print "_"$1"_""\t"$2"\t"$3}' ${Genbank_ref} > _temp_genbank_ref.tx
 grep '\[phylum\]' all_bacteria.txt | sed 's/^[ \t]*//g' > all_phylum_record.txt
 grep '\[family\]' all_bacteria.txt | sed 's/^[ \t]*//g' > all_family_record.txt
 grep '\[genus\]' all_bacteria.txt | sed 's/^[ \t]*//g' > all_genus_record.txt
+grep '\[species\]' all_bacteria.txt | sed 's/^[ \t]*//g' > all_species_record.txt
+grep '\[subspecies\]' all_bacteria.txt | sed 's/^[ \t]*//g' > all_subspecies_record.txt
+
 
 ### for all taxon, check number of species with complete genomes in GenBank
 check_species_num()
@@ -61,16 +64,53 @@ check_species_num()
 	  echo -e "${taxid}\t${hits_num}" >> species_num_${input_file}
 	  echo "${taxid} has ${hits_num} species found......"
 	  if [ $hits_num -gt $size ]; then
-		  mv temp_found.txt ././output_${input_file}/species_under_${taxid}.txt
+		  mv temp_found.txt ./output_${input_file}/species_under_${taxid}.txt
 	  fi
 	  rm temp_*.txt
   done < $input_file
 }
 
+
+
+### for all species, check number of substrains with complete genomes in GenBank
+# note: omit records with [no rank]
+# note: there are also smaller categories named "subspecies" if we want to be more specific, but not all of species have that
+check_strain_num()
+{
+	input_file="$1"
+	size="$2"
+	echo -e "taxon_id\tfound_strains" > strain_num_${input_file} #this is a record file
+	mkdir output_${input_file}
+	while read p; do
+		taxid=$(echo $p | cut -d" " -f 1)
+		${taxon} list --ids ${taxid} --show-name --show-rank | grep '\[strain\]'  > temp_all_species.txt
+		strain_num=$(cat temp_all_species.txt | wc -l)
+		if [ $strain_num -gt 3 ]; then  #just to filter out species without sub-strain
+			awk '{print "_"$1"_"}' temp_all_species.txt > temp_ids.txt
+			echo -n > temp_found.txt
+			grep -w -f temp_ids.txt _temp_genbank_ref.txt | sort -k1,1V -u >> temp_found.txt
+			hits_num=$(cat temp_found.txt | wc -l)
+			echo -e "${taxid}\t${hits_num}" >> strain_num_${input_file}
+			echo "${taxid} has ${hits_num} strains found......"
+			if [ $hits_num -gt $size ]; then
+				mv temp_found.txt ./output_${input_file}/strains_under_${taxid}.txt
+			fi
+			rm temp_*.txt
+		fi
+	done < $input_file
+}
+
+
+
+
 ### species counting
 check_species_num all_phylum_record.txt ${size}
 check_species_num all_family_record.txt ${size}
 check_species_num all_genus_record.txt ${size}
+### strain counting
+check_strain_num all_subspecies_record.txt ${size}
+check_strain_num all_species_record.txt ${size}
+
 
 ### filter count file and then do a random selection
 get_seeded_random()
