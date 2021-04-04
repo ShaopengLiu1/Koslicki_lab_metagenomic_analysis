@@ -755,9 +755,10 @@ if __name__ == '__main__':
 					full_sketch2 = P.map(cce_load_full_kmer, sketch2)
 				# get GT
 				wrapper_ground_truth_ji_matrix(full_sketch1, full_sketch2, out_name, threads=num_threads)
+				del full_sketch1, full_sketch2
 				
 			# delete obj to release MEM
-			del sketch1, sketch2, full_sketch1, full_sketch2
+			del sketch1, sketch2
 			gc.collect()
 				
 				
