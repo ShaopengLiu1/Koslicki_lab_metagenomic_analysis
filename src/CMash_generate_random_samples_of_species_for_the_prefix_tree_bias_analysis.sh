@@ -17,7 +17,7 @@ Genbank_ref="${pipe_path}/GenBank_db/NCBI_GenBank_download_link.txt"
 seed=$1
 size=$2
 [ -z $seed ] && seed=1234567
-[ -z $size ] && size=30
+[ -z $size ] && size=20
 
 echo "pipe start......"
 echo "The seed for random sampling is $seed"
@@ -120,7 +120,32 @@ get_seeded_random()
     </dev/zero 2>/dev/null
 }
 
-### random select 3 taxon for each level
+
+
+
+### random sample 100 species
+mkdir random_100_species
+awk '{print "_"$1"_"}' all_species_record.txt > temp_random_species.txt
+grep -w -f temp_random_species.txt _temp_genbank_ref.txt | sort -k1,1V -u > ./random_100_species/random_hits.txt \
+	&& rm temp_random_species.txt
+cd random_100_species
+shuf --random-source=<(get_seeded_random ${seed}) random_hits.txt | head -100 > 100_random_genomes_seed_${seed}.txt
+# download them
+mkdir genome_files
+for file in $(cut -f 3 100_random_genomes_seed_${seed}.txt); do
+	suffix=$(echo ${file##*/})
+        echo "downloading $suffix"
+        wget -q ${file}/${suffix}_genomic.fna.gz 2>/dev/null
+done
+mv *fna.gz genome_files
+cd genome_files
+gunzip *gz
+realpath *fna > ../filepath_100_genomes.txt
+cd ..
+head -30 filepath_100_genomes.txt > top30_for_simulation.txt
+
+
+### random select 3 taxon for each level: finally I used genus Brucella, not the random samples, so the code below are not used
 generate_random_sample()
 {
   input_file="$1"

@@ -28,6 +28,7 @@ conda install -y -c bioconda cmash
 conda install -y -c anaconda seaborn
 conda install -y -c bioconda kmc
 conda install -y -c bioconda taxonkit
+conda install -y -c bioconda insilicoseq
 conda deactivate
 
 
