@@ -23,9 +23,9 @@ Shaopeng Liu (sml6467@psu.edu)
 ## 2. Analysis <a name="2_analysis"></a>
 ### 1. CMash <a name="21_CMash_repro"></a>
 Implement truncation-based algorithm to accelerate k-mer based estimations.  
-- [ ] generate a random sample of species under phylum/class/order/family/genus (though we only need 3, but not sure which three works best) and download the corresponding complete & (representative || random pick 1 if no representative genomes defined)
-- [ ] create a py wrapper for CMash based on the previous CMash-reproducible repo to implement previous analysis
-- [ ] pipeline previous steps for automatic run
+- [x] generate a random sample of species under phylum/class/order/family/genus (though we only need 3, but not sure which three works best) and download the corresponding complete & (representative || random pick 1 if no representative genomes defined)
+- [ ] (ongoing) **create a py wrapper for CMash based on the previous CMash-reproducible repo to implement previous analysis**
+- [x] pipeline wrapper for previous steps for automatic run
 - [ ] finish manuscript
 
 ### 2. Similarity tree <a name="22_ani"></a>
@@ -49,7 +49,7 @@ git clone https://github.com/ShaopengLiu1/Koslicki_lab_metagenomic_analysis.git
 (2) go to src folder and install necessary tools
 ```
 cd src
-bash 0.install_dependency.sh
+bash 0.install_all_required_dependency_run_once.sh
 ```
 
 ### 3.2 Reproducibles for CMash <a name="32_CMash"></a>
