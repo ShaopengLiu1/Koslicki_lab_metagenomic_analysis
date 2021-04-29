@@ -32,7 +32,7 @@ cd Koslicki_lab_metagenomic_analysis/3_mini_analysis/20210410_CSE566_project
 # activate the conda env
 conda activate ../../src/conda_env/CMash_env_py37/
 # store the abs paths of your query/ref files
-python generate_3_JIs.py -q <path_to_query> -r <path_to_ref> -x True -z True 
+python non_parallel_generate_3_JIs.py  -q <path_to_query> -r <path_to_ref> -x True -z True 
 ```
 
 
