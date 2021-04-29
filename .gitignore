@@ -19,3 +19,13 @@ src/GenBank_db/*
 !3_mini_analysis/20210130_CAMISIM_errorfree_simulation/CAMISIM_config_file
 
 
+#20210410_CSE562_project
+3_mini_analysis/20210410_CSE566_project/*
+!3_mini_analysis/20210410_CSE566_project/*txt
+!3_mini_analysis/20210410_CSE566_project/*sh
+!3_mini_analysis/20210410_CSE566_project/*py
+!3_mini_analysis/20210410_CSE566_project/*.md
+
+
+
+
