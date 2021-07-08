@@ -30,5 +30,5 @@ src/GenBank_db/*
 
 #20210525_Assembly_exploration
 3_mini_analysis/20210525_Assembly_exploration/*
-!3_mini_analysis/20210525_Assembly_exploration/date_range_species.txt
+!3_mini_analysis/20210525_Assembly_exploration/strain_level_hits.txt
 !3_mini_analysis/20210525_Assembly_exploration/merge_strain_name_contig_only_filtered_metadata.txt
