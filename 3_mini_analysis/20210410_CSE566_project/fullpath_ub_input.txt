@@ -1,0 +1,3 @@
+/data/sml6467/github/Koslicki_lab_metagenomic_analysis/3_mini_analysis/20210410_CSE566_project/genome_data/merged_data/merged_f12.fa.gz
+/data/sml6467/github/Koslicki_lab_metagenomic_analysis/3_mini_analysis/20210410_CSE566_project/genome_data/merged_data/merged_f13.fa.gz
+/data/sml6467/github/Koslicki_lab_metagenomic_analysis/3_mini_analysis/20210410_CSE566_project/genome_data/merged_data/merged_f14.fa.gz
