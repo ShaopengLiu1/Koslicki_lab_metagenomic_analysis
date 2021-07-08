@@ -30,4 +30,4 @@ src/GenBank_db/*
 
 #20210525_Assembly_exploration
 3_mini_analysis/20210525_Assembly_exploration/*
-!3_mini_analysis/20210525_Assembly_exploration/strain_level_hits.txt
+!3_mini_analysis/20210525_Assembly_exploration/date_range_strain.txt
