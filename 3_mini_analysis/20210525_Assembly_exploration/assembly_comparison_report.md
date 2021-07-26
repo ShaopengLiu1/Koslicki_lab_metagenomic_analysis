@@ -378,7 +378,7 @@ May need some followup
 
 | New                                   | Old               |
 | ------------------------------------- | ----------------- |
-| SKESA v. 2.2                          | Velvet v. 1.2.10  |
+| SKESA v. 2.2 (2018)                   | Velvet v. 1.2.10  |
 | HGAP v. 2019                          | CLC NGS Cell v. 6 |
 | SPAdes v. 3.9~3.12  (which is better) | SPAdes            |
 |                                       |                   |
