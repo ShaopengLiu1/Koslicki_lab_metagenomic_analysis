@@ -33,3 +33,16 @@ src/GenBank_db/*
 !3_mini_analysis/20210525_Assembly_exploration/date_range_strain.txt
 !3_mini_analysis/20210525_Assembly_exploration/assembly_comparison_report.md
 !3_mini_analysis/20210525_Assembly_exploration/Date_range_distri_strain.png
+
+
+
+#20210705_point_mutation_ecoli_permutation_ANI_JI
+3_mini_analysis/20210705_point_mutation_ecoli_permutation_ANI_JI/*
+!3_mini_analysis/20210705_point_mutation_ecoli_permutation_ANI_JI/draft_code.py
+!3_mini_analysis/20210705_point_mutation_ecoli_permutation_ANI_JI/readme.md
+!3_mini_analysis/20210705_point_mutation_ecoli_permutation_ANI_JI/2021_ecoli.txt
+
+
+
+
+
