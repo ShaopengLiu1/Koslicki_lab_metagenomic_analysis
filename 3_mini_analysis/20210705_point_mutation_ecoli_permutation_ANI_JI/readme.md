@@ -2,6 +2,16 @@
 
 ---
 
+### Local files: 
+
+```
+/data/sml6467/github/Koslicki_lab_metagenomic_analysis/3_mini_analysis/20210705_point_mutation_ecoli_permutation_ANI_JI
+```
+
+(Processing, will be summarized to Onedrive)
+
+
+
 #### Aim: 
 
 Correlates average nucleotide identity (ANI) and Jaccard index (JI) by k-mers in range of k values.
@@ -12,7 +22,7 @@ Correlates average nucleotide identity (ANI) and Jaccard index (JI) by k-mers in
 
 1. Input genome (default: e.coli for now), the baseline
 2. k range (default: 15-60 by 5), length for k-mer
-3. p range (default: 0.001, 0.005, 0.1, 0.15, 0.5), simple point mutation
+3. p range (default: 0.001, 0.005, 0.01,0.05,0.1, 0.15, 0.5), simple point mutation
 4. simulation size m (default: 10000)
 
 
@@ -200,7 +210,81 @@ def s3_1_ci_ji_between_mutated_list(original_seq, mutated_list, kvalue):
 		ref_sketch.pop()
 	
 	# loop through mutated list and stream kmers
+		# loop through mutated list -> stream all kmers for CMH calculation
+	for mutated_string in mutated_list:
+		temp_cardi = estimate_genome_size(mutated_string, kvalue)
+		A_matches = dict()  # to record overlaped kmers
+		for kmer in kmers(mutated_string, kvalue):
+			if rev_comp:
+				kmer = min(kmer, khmer.reverse_complement(kmer))
+			if kmer in sketch_set:
+				A_matches[kmer] = 1
+		### C-MH
+		C_est = np.sum(list(A_matches.values())) / len(sketch_set)
+		J_est = containment_to_jaccard(C_est, cardi_A=cardi_original, cardi_B=temp_cardi)
+		### store results
+		out_CI.append(C_est)
+		out_JI.append(J_est)
+	
+	# return
+	return out_CI, out_JI
 	
 	
+```
+
+
+
+### Overall process:
+
+```bash
+	########################################## Step1: raw seq data processing
+	### 1.1: transfer genome file to string
+	raw_seq = s1_1_generate_string_from_genome(genome_file, rev_comp=True)
+	raw_seq = raw_seq.upper()
+	# remove non ACTG letter (just in case)
+	notACTG = re.compile('[^ACTG]')
+	seq_split_onlyACTG = notACTG.split(raw_seq)
+	if len(seq_split_onlyACTG) > 1:
+		raw_seq=""
+		for short_seq in seq_split_onlyACTG:
+			raw_seq += short_seq
+	
+	
+	########################################## Step2: loop through p values and generate plot
+	mean_ci = pd.DataFrame()
+	mean_ji = pd.DataFrame()
+	
+	for mute_p in p_values:
+		print("Current mutation rate is "+str(mute_p))
+		# generate mutated list
+		p_seq_list, p_mis_ratio_list = s2_3_simulation_for_given_p(seq=raw_seq, p=mute_p, n=sample_size)
+		# confirm the edit distance for samples
+		plot_list_density(p_mis_ratio_list, out_name="Mutation_ratio_" + str(mute_p) + "_size_" + str(sample_size) + ".png")
+		
+		# get est_CI, est_JI by C-MH method
+		df_est_ci = pd.DataFrame()
+		df_est_ji = pd.DataFrame()
+		for kvalue in k_sizes:
+			print("k"+ str(kvalue)+ " under mutation ratio of "+str(mute_p))
+			df_est_ci[str(kvalue)], df_est_ji[str(kvalue)] = s3_1_ci_ji_between_mutated_list(raw_seq, p_seq_list, kvalue)
+			
+		# generate plot from the dict
+		s3_4_plot_ci_ji_matrix_under_given_p(df_est_ci, df_est_ji, mute_p)
+
+		# store mean value
+		temp_mean_ci = []
+		temp_mean_ji = []
+		for kvalue in k_sizes:
+			temp_mean_ci.append(round(df_est_ci[str(kvalue)].mean(), 4))
+			temp_mean_ji.append(round(df_est_ji[str(kvalue)].mean(), 4))
+			
+		mean_ci[str(mute_p)] = temp_mean_ci
+		mean_ji[str(mute_p)] = temp_mean_ji
+		
+	### store the mean df
+	mean_ci.set_axis(["k"+str(x) for x in k_sizes], axis=0, inplace=True) #change rowname to kvalue
+	mean_ji.set_axis(["k"+str(x) for x in k_sizes], axis=0, inplace=True)
+	mean_ci.to_csv("Mean_est_CI_by_mute_p_kvalue.csv", index=True, encoding='utf-8')
+	mean_ji.to_csv("Mean_est_JI_by_mute_p_kvalue.csv", index=True, encoding='utf-8')
 ```
 
