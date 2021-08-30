@@ -17,7 +17,8 @@ Local files:
 - [1. Data filter](#1_filter)
 - [2. Search for pairs](#2_pair)
 - [3. Demo: locate data for a selected pair](#3_data)
-- [4. Pipe: comparison](#4_pipe)
+- [4. Data prep](#4_data)
+- [5. Results collection](#5_collect)
 
 
 
@@ -339,21 +340,60 @@ Assembler: skip those without assmbler infor (not in NCBI or can't find in publi
 
 ---
 
-### Step4. Exploration plan (will build an auto-pipe)
+### Step4. Data preparation <a name="4_data"></a> 
 
-4.1 Pick several data with time span within 1~7 years:
+4.1 Pick several data with time span within 1~7 years from "date_range_strain.txt" file:
 
-| Strain                                       | Last update | Range/yr | Newest data                                                  | Assembler         | Oldest data                                                  | Assembler          |
-| -------------------------------------------- | ----------- | -------- | ------------------------------------------------------------ | ----------------- | ------------------------------------------------------------ | ------------------ |
-| Escherichia coli strain=G5                   | 2021/04/16  | 6.5      | [GCA_018044965.1](https://www.ncbi.nlm.nih.gov/assembly/GCA_018044965.1/) | SKESA v. 2.2      | [GCA_000768485.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_000768485.1/) | Velvet v. 1.2.10   |
-| Aliivibrio fischeri strain=KB2B1             | 2021/04/13  | 4.9      | [GCA_017921855.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_017921855.1/) | HGAP v. 2019      | [GCA_001640305.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_001640305.1/) | CLC NGS Cell v. 6  |
-| Staphylococcus haemolyticus strain=IIF2SW-P5 | 2020/08/22  | 3.9      | [GCA_014266945.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_014266945.1/) | SPAdes v. v3.11.1 | [GCA_001743425.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_001743425.1/) | A5 v. 20150522     |
-| Klebsiella pneumoniae strain=70              | 2020/09/11  | 2.9      | [GCA_014526145.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_014526145.1/) | SPAdes v. 3.9.0   | [GCA_002411925.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_002411925.1/) | SPAdes v. 3.9.1    |
-| Listeria monocytogenes strain=LM11           | 2019/12/29  | 2.2      | [GCA_009807375.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_009807375.1/) | SPAdes v. 3.10    | [GCA_002776275.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_002776275.1/) | SPAdes v. v3.9.0   |
-| Escherichia coli strain=C127                 | 2020/05/11  | 1.5      | [GCA_013030815.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_013030815.1/) | SPAdes v. 3.12    | [GCA_003721935.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_003721935.1/) | SPAdes v. 3.12.0   |
-| Clostridium perfringens strain=2C45          | 2020/12/21  | 0.5      | [GCA_016236225.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_016236225.1/) | SPAdes v. 3.9.0   | [GCA_013305215.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_013305215.1/) | unicycler v. 0.4.8 |
+| Strain                                                       | Last update | Range/yr | Newest data                                                  | Assembler         | Oldest data                                                  | Assembler          | Note |
+| ------------------------------------------------------------ | ----------- | -------- | ------------------------------------------------------------ | ----------------- | ------------------------------------------------------------ | ------------------ | ---- |
+| (No: miss old sra)<br />Escherichia coli strain=G5           | 2021/04/16  | 6.5      | [GCA_018044965.1](https://www.ncbi.nlm.nih.gov/assembly/GCA_018044965.1/) | SKESA v. 2.2      | [GCA_000768485.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_000768485.1/) | Velvet v. 1.2.10   |      |
+| (No: Pacbio for new)<br />Aliivibrio fischeri strain=KB2B1   | 2021/04/13  | 4.9      | [GCA_017921855.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_017921855.1/) | HGAP v. 2019      | [GCA_001640305.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_001640305.1/) | CLC NGS Cell v. 6  |      |
+| (No: miss old SRA)<br />Staphylococcus haemolyticus strain=IIF2SW-P5 | 2020/08/22  | 3.9      | [GCA_014266945.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_014266945.1/) | SPAdes v. v3.11.1 | [GCA_001743425.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_001743425.1/) | A5 v. 20150522     |      |
+| (No: miss both SRA)<br />Klebsiella pneumoniae strain=70     | 2020/09/11  | 2.9      | [GCA_014526145.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_014526145.1/) | SPAdes v. 3.9.0   | [GCA_002411925.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_002411925.1/) | SPAdes v. 3.9.1    |      |
+| (No: miss both SRA) <br />Listeria monocytogenes strain=LM11 | 2019/12/29  | 2.2      | [GCA_009807375.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_009807375.1/) | SPAdes v. 3.10    | [GCA_002776275.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_002776275.1/) | SPAdes v. v3.9.0   |      |
+| (No: miss both SRA) <br />Escherichia coli strain=C127       | 2020/05/11  | 1.5      | [GCA_013030815.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_013030815.1/) | SPAdes v. 3.12    | [GCA_003721935.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_003721935.1/) | SPAdes v. 3.12.0   |      |
+| (No: miss both SRA)<br />Clostridium perfringens strain=2C45 | 2020/12/21  | 0.5      | [GCA_016236225.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_016236225.1/) | SPAdes v. 3.9.0   | [GCA_013305215.1](https://www.ncbi.nlm.nih.gov/assembly/GCF_013305215.1/) | unicycler v. 0.4.8 |      |
+| (No: miss both SRA)<br />Streptomyces somaliensis DSM 40738 strain=DSM 40738 |             |          |                                                              |                   |                                                              |                    |      |
+| (No: miss both SRA)<br />Bartonella doshiae strain=BM1374167 |             |          |                                                              |                   |                                                              |                    |      |
+| (No: miss both SRA)<br />Escherichia coli strain=EC1         |             |          |                                                              |                   |                                                              |                    |      |
+| (No: miss both SRA) Staphylococcus aureus strain=A69         |             |          |                                                              |                   |                                                              |                    |      |
+| Acinetobacter baumannii strain=MRSN15038                     |             |          |                                                              |                   |                                                              |                    |      |
 
 
+
+Complete-available list:
+
+**!!! Note:** 
+
+1. date range in assembly record may NOT reflect true seq data range (usualy shorter)
+2. source varies a lot, collection date -> publish date varies a lot
+3. Some interesting finding: 2 assemblies from the same data (might support your idea):
+   1. GCA_902156795.1, GCA_900501565.1
+   2. GCA_902156825.1, GCA_900509495.1
+4. New assembly may based on older data (5th and 6th record)
+5. Make an introduction slide?
+   1. our method
+   2. 
+6. Other databases for future usage: EBI, IMG/r, BGI, JGI
+7. check ref OR ref-free based on Quast
+   1. gene finding using gene mark
+   2. provide raw seq data
+   3. 
+
+| Strain                                           | Day range | Publish time            | New                                                    | Old                                                    | ShortCut                |
+| ------------------------------------------------ | --------- | ----------------------- | ------------------------------------------------------ | ------------------------------------------------------ | ----------------------- |
+| Acinetobacter baumannii strain=MRSN15038         | 120       | 2015-11-14 ~ 2016-3-13  | https://www.ncbi.nlm.nih.gov/assembly/GCA_016527325.2  | https://www.ncbi.nlm.nih.gov/assembly/GCF_001441545.1/ | S1                      |
+| Escherichia coli strain=C305                     | 732       | 2019-04-04 ~ 2021-04-05 | https://www.ncbi.nlm.nih.gov/assembly/GCA_018072745.1/ | https://www.ncbi.nlm.nih.gov/assembly/GCF_004769025.1/ | S2                      |
+| Staphylococcus aureus strain=17                  | 834       | 2019-04-18 ~ 2021-07-30 | https://www.ncbi.nlm.nih.gov/assembly/GCF_010364655.1/ | https://www.ncbi.nlm.nih.gov/assembly/GCF_005146215.2/ | S3                      |
+| Campylobacter jejuni strain=PNUSAC009032         | 362       | 2019-05-23 ~ 2020-05-19 | https://www.ncbi.nlm.nih.gov/assembly/GCA_013132495.1/ | https://www.ncbi.nlm.nih.gov/assembly/GCA_005872375.1/ | S4                      |
+| Escherichia coli strain=28                       | 111       | 2012-04-15 ~ 2012-08-04 | https://www.ncbi.nlm.nih.gov/assembly/GCA_017761325.1/ | https://www.ncbi.nlm.nih.gov/assembly/GCA_012533515.1/ | S5 (deleted, 2 in 2012) |
+| Salmonella enterica strain=PNUSAS029866          | 44        | 2017-12-13 ~ 2018-01-26 | https://www.ncbi.nlm.nih.gov/assembly/GCA_016358905.1/ | https://www.ncbi.nlm.nih.gov/assembly/GCA_010178345.1/ | S6                      |
+| Vibrio cholerae strain=O1 Inaba El Tor           | 0         | 2016-10-24 ~ 2016-10-24 | https://www.ncbi.nlm.nih.gov/assembly/GCA_018073345.1/ | https://www.ncbi.nlm.nih.gov/assembly/GCA_015746525.1/ | S7                      |
+| Listeria monocytogenes strain=FDA1077798-012-001 | 10        | 2018-10-21 ~ 2018-10-30 | https://www.ncbi.nlm.nih.gov/assembly/GCA_004472675.1/ | https://www.ncbi.nlm.nih.gov/assembly/GCA_003777485.1/ | S8                      |
+
+
+
+To find the corresponding files:
 
 ```
 ### code example:
@@ -364,39 +404,259 @@ grep -w "$target" merge_strain_name_contig_only_filtered_metadata.txt | sort -t$
 
 
 
-4.2 Comparisons:
+Download list:
 
-1. Method improvement: New assembler on old data vs old assembler on old data (directly download)
-2. Data improvement: New assembler on new data (directly download) vs new assembler on old data
-3. ***Might be better to process both side instead of downloading them for fair comparison
+```bash
+function download_files {
+  echo "Downloading $1"
+  fastq-dump.2.11.0 --split-3 $1
+  rename.ul -v $1 $2 *fastq
+}
 
-
-
-4.3 Assemblers to use:
-
-May need some followup
-
-| New                                   | Old               |
-| ------------------------------------- | ----------------- |
-| SKESA v. 2.2 (2018)                   | Velvet v. 1.2.10  |
-| HGAP v. 2019                          | CLC NGS Cell v. 6 |
-| SPAdes v. 3.9~3.12  (which is better) | SPAdes            |
-|                                       |                   |
-|                                       |                   |
-
-
-
-4.4 Pipeline:
-
-1. Take an arbitrary input genome and process by 5+5 assemblers 
-2. Bridged to the comparison platform
-
+# download list
+SRR3223466	S1_New_2016-03-13
+SRR2911725	S1_Old_2015-11-14
+DRR150423	S2_New_2021-04-05
+SRR6952372	S2_Old_2019-04-04
+SRR14923836	S3_New_2021-07-30
+SRR8925280	S3_Old_2019-04-18
+SRR11813656	S4_New_2020-05-19
+SRR9108111	S4_Old_2019-05-23
+SRR6514409	S6_New_2018-01-26
+SRR6373416	S6_Old_2017-12-13
+SRR4432995	S7_New_2016-10-24
+SRR4432997	S7_Old_2016-10-24
+SRR8134478	S8_New_2018-10-30
+SRR8082407	S8_Old_2018-10-21
+```
 
 
-More infor for ref:
 
-1. https://assemblathon.org/
 
-2. http://bioinf.spbau.ru/quast  
 
-   
+4.2 Assemblers:
+
+1. All found data were processed by SKESA and Spades (Except 1 by Newbler, which is a commercial software and no longer available now). Year 2018~2021, except 1 in 2016
+2. Refs:
+   1. Megahit:
+      1. https://github.com/Penn-State-Microbiome-Center/KickStart-Workshop-2021/blob/main/Day5-Shotgun/MEGAHIT.md
+      2. https://github.com/voutcn/megahit
+      3. https://anaconda.org/bioconda/megahit/labels
+   2. SKESA:
+      1. https://anaconda.org/bioconda/skesa/files?version=2.1
+   3. SPAdes:
+      1. https://github.com/ablab/spades
+      2. https://anaconda.org/bioconda/spades/files?version=3.7.0
+
+| Name           | Category | Version        | Git  | Conda | Note         |
+| -------------- | -------- | -------------- | ---- | ----- | ------------ |
+| Megahit (2015) | Old      | 1.0.3 @2015.10 |      | Y     |              |
+| Megahit (2015) | New      | 1.2.9 @2019.10 |      | Y     |              |
+| SKESA (2018)   | New      | 2.4.0 @2020.3  |      | Y     |              |
+| SKESA (2018)   | Old      | 2.1.0 @2018.2  |      | Y     |              |
+| SPAdes (2012)  | New      | 3.15.3 @2021.7 |      | Y     | Many verions |
+| SPAdes(2012)   | Old      | 3.7.0 @2016.3  |      | Y     |              |
+
+
+
+2 temp env for old vs new assemblers
+
+```bash
+conda create -y -n old_assmb_py35 python=3.5
+conda activate old_assmb_py35
+conda install -y -c bioconda megahit=1.0.3
+conda install -y -c bioconda skesa=2.1
+conda install -y -c bioconda spades=3.7.0
+
+
+conda create -y -n new_assmb_py37 python=3.7
+conda activate new_assmb_py37
+conda install -y -c bioconda megahit=1.2.9
+conda install -y -c bioconda skesa=2.4.0
+conda install -y -c bioconda spades=3.15.3
+```
+
+
+
+
+
+4.3 Process all data by default setting
+
+1. Method improvement: New assembler on old data vs old assembler on old data
+2. Data improvement: New assembler on new data  vs new assembler on old data
+3. Use 2*3 assemblers to process the 7 pairs
+
+```bash
+#cd to the input data folder
+#New version loop:
+conda activate new_assmb_py37
+for prefix in $(cut -f 2 raw_data.txt); do
+	echo $prefix
+	# megahit
+	megahit -1 ${prefix}_1.fastq -2 ${prefix}_2.fastq -o ../assembly_out/M2015_New_${prefix}
+	# SKESA
+	skesa --reads ${prefix}_1.fastq,${prefix}_2.fastq --cores 4 --memory 48 > ../assembly_out/S2018_New_${prefix}.fa
+	# SPAdes
+	spades.py -1 ${prefix}_1.fastq -2 ${prefix}_2.fastq -o ../assembly_out/SPA2012_New_${prefix}
+done
+
+# Old version loop
+conda activate old_assmb_py35
+for prefix in $(cut -f 2 raw_data.txt); do
+	echo $prefix
+	# megahit
+	megahit -1 ${prefix}_1.fastq -2 ${prefix}_2.fastq -o ../assembly_out/M2015_Old_${prefix}
+	# SKESA
+	skesa --fastq ${prefix}_1.fastq,${prefix}_2.fastq --cores 4 --memory 48 > ../assembly_out/S2018_Old_${prefix}.fa
+	# SPAdes
+	spades.py -1 ${prefix}_1.fastq -2 ${prefix}_2.fastq -o ../assembly_out/SPA2012_Old_${prefix}
+done
+```
+
+
+
+Megahit
+
+```bash
+# New v1.2.9
+megahit -1 ${prefix}_1.fastq -2 ${prefix}_2.fastq -o ../assembly_out/M2015_New_${prefix}
+
+# Old v1.0.3
+megahit -1 ${prefix}_1.fastq -2 ${prefix}_2.fastq -o ../assembly_out/M2015_Old_${prefix}
+```
+
+
+
+SKESA
+
+```bash
+# New v2.4
+skesa --reads ${prefix}_1.fastq,${prefix}_2.fastq --cores 4 --memory 48 > ../assembly_out/S2018_New_${prefix}.fa
+
+# Old v2.1  
+skesa --fastq ${prefix}_1.fastq,${prefix}_2.fastq --cores 4 --memory 48 > ../assembly_out/S2018_Old_${prefix}.fa
+```
+
+
+
+SPAdes
+
+```bash
+# New 3.15.3
+spades.py -1 ${prefix}_1.fastq -2 ${prefix}_2.fastq -o ../assembly_out/SPA2012_New_${prefix}
+
+# Old 3.7
+spades.py -1 ${prefix}_1.fastq -2 ${prefix}_2.fastq -o ../assembly_out/SPA2012_Old_${prefix}
+
+
+```
+
+
+
+
+
+
+
+4.4 Quast comparison
+
+```bash
+#cd to output folder, use my own metagenomic env
+quast -o lsp  -m 250 --circos --glimmer --rna-finding -1 ../../assembly_input_data/S3_Old_2019-04-18_1.fastq  -2 ../../assembly_input_data/S3_Old_2019-04-18_2.fastq S2018_New_S3_Old_2019-04-18.fa
+```
+
+
+
+```bash
+#cd to the input folder
+conda activate metagenomic_py37
+
+### SKEDA only has 1 fa out
+### put into a shell
+for suffix in $(cut -f 2 raw_data.txt); do
+	echo "Processing $suffix"
+	for version in New Old; do
+		echo "Processing S2018_${version}_${suffix}"
+		quast -o ../quast_out/S2018_${version}_${suffix} -m 250 --circos --glimmer --rna-finding -1 ${suffix}_1.fastq -2 ${suffix}_2.fastq ../assembly_out/S2018_${version}_${suffix}.fa
+	done
+done
+
+
+### SPAdes
+### put into a shell
+for suffix in $(cut -f 2 raw_data.txt); do
+	echo "Processing $suffix"
+	for version in New Old; do
+		echo "Processing SPA2012_${version}_${suffix}"
+		quast -o ../quast_out/SPA2012_${version}_${suffix} -m 250 --circos --glimmer --rna-finding -1 ${suffix}_1.fastq -2 ${suffix}_2.fastq ../assembly_out/SPA2012_${version}_${suffix}/contigs.fasta
+	done
+done
+	
+
+
+### Megahit
+### put into a shell
+for suffix in $(cut -f 2 raw_data.txt); do
+	echo "Processing $suffix"
+	for version in New Old; do
+		echo "Processing M2015_${version}_${suffix}"
+		quast -o ../quast_out/M2015_${version}_${suffix} -m 250 --circos --glimmer --rna-finding -1 ${suffix}_1.fastq -2 ${suffix}_2.fastq ../assembly_out/M2015_${version}_${suffix}/final.contigs.fa
+	done
+done
+```
+
+
+
+
+
+
+
+### 5. Results collection <a name="5_collect"></a> 
+
+Merge all data together
+
+```bash
+cd /data/sml6467/github/Koslicki_lab_metagenomic_analysis/3_mini_analysis/20210525_Assembly_exploration/quast_out
+
+find . -name "report.tsv" | head -1 | xargs cut -f 1 > merged_Quast_report.tsv
+
+for folder in $(ls -d */); do
+	echo $folder
+	name=$(echo ${folder%/})
+	cat <(echo ${name})  <(cut -f 2 ${folder}/report.tsv | sed '1d') > _temp_data.txt
+	paste merged_Quast_report.tsv _temp_data.txt > _temp_merge && rm _temp_data.txt
+	mv _temp_merge merged_Quast_report.tsv
+done
+```
+
+
+
+Temp compare by R code
+
+```R
+quast <- read.csv("merged_Quast_report.tsv", sep="\t")
+row.names(quast) <- quast[,1]
+quast <- quast[,-1]
+col_quast <- colnames(quast)
+
+# def subset df function
+get_subdf <- function(key_word, out_name="temp.tsv") {
+  out_logic <- grepl(key_word, col_quast)
+  out_df <- quast[,out_logic]
+  write.table(out_df, file=out_name, sep="\t", quote=FALSE, col.names=NA)
+  return(out_df)
+}
+
+# task1: assembler-dependency (method improvement)
+get_subdf("New_S3_New")
+get_subdf("New_S6_New")
+
+# task2: version-dependency
+get_subdf("M2015_(New|Old)_S3_New")   # an extreme case
+get_subdf("S6_New")
+get_subdf("M2015_")
+
+# task3: data-dependency (data improvement)
+get_subdf("New_S7_")	# a good example of close data: very similar
+get_subdf("New_S2")  # seems many false-positive due to low depth (coverage doubles)
+```
+
