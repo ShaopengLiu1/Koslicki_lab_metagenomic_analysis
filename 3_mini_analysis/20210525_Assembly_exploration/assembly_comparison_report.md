@@ -658,5 +658,18 @@ get_subdf("M2015_")
 # task3: data-dependency (data improvement)
 get_subdf("New_S7_")	# a good example of close data: very similar
 get_subdf("New_S2")  # seems many false-positive due to low depth (coverage doubles)
+get_subdf("New_S3")  # large date range, but much smaller difference compared with S2
+
+# task4: new on new vs old on old
+get_subdf("(S2018_New_S2_New|SPA2012_Old_S2_Old)")
+get_subdf("(M2015_New_S2_New|SPA2012_Old_S2_Old)")
+get_subdf("(SPA2012_New_S2_New|M2015_Old_S2_Old)")
+
+
 ```
 
+
+
+
+
+SPAdes vs Megahit
