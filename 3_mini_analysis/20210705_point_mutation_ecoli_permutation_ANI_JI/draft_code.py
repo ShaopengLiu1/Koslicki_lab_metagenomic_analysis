@@ -342,7 +342,7 @@ if __name__ == '__main__':
 	                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument('-g', '--genome', help="Path to input genomes")
 	parser.add_argument('-k', '--k_range', type=str, help="k-mer range", default="15-60-5")
-	parser.add_argument('-n', '--sample_size', type=int, help="Number of mutated strings.", default=10000)
+	parser.add_argument('-n', '--sample_size', type=int, help="Number of mutated strings.", default=500)
 	parser.add_argument('-p', '--p_range', type=str, help="mutation rate range", default="0.001,0.005,0.01,0.05,0.1,0.15,0.2,0.5")
 	parser.add_argument('-r', '--rev_comp', type=str, help="Whether to keep the reverse complementary", default="True")
 
