@@ -34,6 +34,7 @@ src/GenBank_db/*
 !3_mini_analysis/20210525_Assembly_exploration/assembly_comparison_report.md
 !3_mini_analysis/20210525_Assembly_exploration/Date_range_distri_strain.png
 !3_mini_analysis/20210525_Assembly_exploration/followup_2021.9_report.md
+!3_mini_analysis/20210525_Assembly_exploration/stage3_pipe_for_comparison/src/*
 
 
 #20210705_point_mutation_ecoli_permutation_ANI_JI
