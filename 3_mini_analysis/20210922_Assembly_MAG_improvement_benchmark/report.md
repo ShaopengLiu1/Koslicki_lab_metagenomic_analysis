@@ -61,7 +61,7 @@
 ### To-be confirmed:
 
 - [ ] Why need original vs new?
-- [ ] MetaHipmer details (parameter, install), wait for feedback
+- [ ] Co-assembly (Rob Egan) vs multi-assembly (If so, MegaHit2 -> dedup/de-variation -> assembly)
 
 ---
 
@@ -71,6 +71,7 @@
 #Local file
 cd /data/sml6467/github/Koslicki_lab_metagenomic_analysis/3_mini_analysis/20210922_Assembly_MAG_improvement_benchmark
 
+# env preparation
 
 ```
 
