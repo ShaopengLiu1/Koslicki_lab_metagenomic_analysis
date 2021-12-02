@@ -32,6 +32,10 @@
    1. Metahipmer2 help: https://hpcadvisorycouncil.atlassian.net/wiki/spaces/HPCWORKS/pages/1827307543/MetaHipMer+2.0+for+ISC21#Build-and-Install-mhm2
    2. Install (No Github or Conda): https://bitbucket.org/berkeleylab/mhm2/src/master/
    3. https://bitbucket.org/berkeleylab/mhm2/src/master/docs/mhm_guide.md (check here)
+   
+4. Questions:
+
+   - [ ] Wha't the number in MHM2 output: ">Contig9178 48.770420", values range from 0 to 144.95. Depth? 
 
 
 
@@ -68,11 +72,12 @@
       4. cluster all contigs into genome bins
 
 2. for every data $i$ in the "new" group:
-   1. run MetaHit for de novo assembly $A_i$
-   2. assign all contigs from $A_i$ to current genome bin by some similarity cutoff (e.g. 95% ANI by FastANI)
+   1. run **MetaHit** for de novo assembly $A_i$
+   2. assign all contigs from $A_i$ to current genome bin by some similarity cutoff (e.g. 95% ANI by **FastANI**)
    3. for remaining contigs, cluster them and create new genome bins
+   3. **SGB dedup (TBD)** 
    4. update current database from $D_{i-1}$ to $D_i$
-
+   
 3. Select some $D_i$ to compare the quality of assembly.
 
 
@@ -93,7 +98,58 @@
 #Local file
 cd /data/sml6467/github/Koslicki_lab_metagenomic_analysis/3_mini_analysis/20210922_Assembly_MAG_improvement_benchmark
 
-# env preparation
+
+
+# env preparation (use "metagenomic_py37" for now, will build separate one in full analysis)
+work_dir=$PWD
+data_dir=${work_dir}/data
+src_dir=${work_dir}/src
+out_dir=${work_dir}/output
+conda activate metagenomic_py37
+
+
+
+# run megahit v1.2.9 (new version) for all data
+mkdir -p ${out_dir}/megahit_single_assembly
+
+for single_data in ls ${data_dir}/raw_reads_100; do
+        echo "Running ${single_data} now......"
+        name=$(echo ${single_data%.fq.gz})
+        megahit -r ${data_dir}/raw_reads_100/${single_data} -o ${out_dir}/megahit_single_assembly/megahit_out_${name}
+        unset single_data name
+done
+
+
+
+# exploration:
+### task1: clustering alg (based on fastANI?)
+
+### task3: map raw reads from **ALL** datasets to SGBs (BBTools)
+```
+
+
+
+### Unit test (notes)
+
+```bash
+# fastANI
+### code
+$ fastANI -q genome1.fa -r genome2.fa -o output.txt
+$ fastANI -q genome1.fa --rl genome_list.txt -o output.txt
+### note
+1. needs to separate fa file, each file represent a genome. 
+2. For our analysis, we need to cluster first to get SGBs then assign every new assembled fragments to the SGB
+3. extremely fast
+4. we may need to cluster assembled fragments too before running
+
+
+# cluster of fragments:
+### by ANI
+1. needs to disect to single files
+
+
+### by cosine similarity of TNF (VAE paper)
+
 
 ```
 
