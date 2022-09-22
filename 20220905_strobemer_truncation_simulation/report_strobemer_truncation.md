@@ -135,11 +135,13 @@ Subseq: k-mers or strobemers
 | m    | % of subseq matches  | number of matched subseqs / total subseqs                    |
 | sc   | sequence coverage    | union of regions covered by subseqs' EXACT nt location       |
 | mc   | match coverage       | union of regions spanned by whole subsets' region            |
-| E    | expected island size | $E = \frac{1}{|S|}*\sum\limits_{\substack{x\in X}} x^2$, where X is the island set (uncovered regions) |
+| E    | expected island size | $E = \frac{1}{S}*\sum\limits_{\substack{x\in X}} x^2$, where X is the island set (uncovered regions) |
 
 
 
 <img src="eval.png" alt="eval" style="zoom:80%;" />
+
+**（mc and sc labels should be exchanged)**
 
 
 
@@ -157,6 +159,7 @@ Brief results:
 
 
         kmer  spaced_sparse  spaced_dense   minstrobe  randstrobe  hybridstrobe
+
 0  99.939753      99.817722     99.909439    4.257456    3.946179      3.785521
 1  99.940000      99.800000     99.900000   20.000000   80.290000     78.700000
 2  99.940000      99.820000     99.910000   23.170000   90.760000     88.600000
@@ -166,8 +169,9 @@ Brief results:
 
 3. the situation is even worse then mutation happens
 
-        kmer  spaced_sparse  spaced_dense   minstrobe  randstrobe  hybridstrobe
-0  72.048629      42.466309     63.380991    3.375867    2.953883      2.682608
-1  95.777466      76.395838     94.406644   17.790674   66.009606     63.037823
-2  95.777466      82.119272     95.427256   20.972584   78.106864     75.545327
-3   2.000000      42.000000      2.000000  373.000000   15.000000     20.000000
+       kmer  spaced_sparse  spaced_dense   minstrobe  randstrobe  hybridstrobe
+
+   0  72.048629      42.466309     63.380991    3.375867    2.953883      2.682608
+   1  95.777466      76.395838     94.406644   17.790674   66.009606     63.037823
+   2  95.777466      82.119272     95.427256   20.972584   78.106864     75.545327
+   3   2.000000      42.000000      2.000000  373.000000   15.000000     20.000000
