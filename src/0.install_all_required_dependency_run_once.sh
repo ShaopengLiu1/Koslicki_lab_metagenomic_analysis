@@ -13,8 +13,6 @@ mkdir -p git_repo
 bash ${pipe_path}/CAMISIM_prepare_running_env_conda_py27.sh
 
 
-# install CMash env
-bash ${pipe_path}/CMash_prepare_running_env_conda_py37.sh
 
 
 # download NCBI GenBank bacteria database
